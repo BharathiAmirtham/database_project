@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <title>CSV File Upload</title>
+<style>
+    form{
+        width: 20%;
+        margin-left: 37%;
+        margin-top: 4%;
+        height: 40%;
+        padding: 5px;
+    }
+    button {
+            padding: 5px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        button:hover {background-color: #3e8e41}
+
+        button:active {
+            background-color: #3e8e41;
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+}
+    .tab{
+        margin-left: 25%;
+        border: 2px solid rgb(11, 63, 143);
+        background-color: rgba(90, 222, 240, 0.733);
+        width: 50%;
+        padding: 15px;
+
+    }
+    h2{
+        color: rgba(211, 16, 16, 0.877);
+        text-align: center;
+        font-weight: bold;
+        text-shadow: rgb(61, 61, 52) 2px 2px 2px;
+    }
+    h1{
+        color: rgb(16, 16, 143);
+        text-align: center;
+    }
+    body{
+        background-color: #86aada;
+    }
+    .delete-button{
+        width: 25px;
+        height: 25px;
+        background-color: red;
+        margin-right: 30%;
+        }
+
+
+
+    table{
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table td{
+  border: 1px solid #ddd;
+  padding: 8px;
+  font-size: 15px;
+  font-weight: bold;
+  
+}
+
+
+table tr:nth-child(even){background-color: #f2f2f2;}
+
+table tr:hover {background-color: #ddd;}
+
+table th {
+  padding-top: 12px;
+  border: 1px solid #ddd;
+  padding: 8px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #951e99b2;
+  color: white;
+  text-shadow: black 2px 3px 2px;
+}
+.messages{
+    font-size: 18px;
+    color: rgb(224, 14, 14);
+    margin-left: 65%;
+    margin-top: 10px;
+    
+}
+ 
+
+</style>
+
+</head>
+<body>
+    {% if user.is_staff %}
+
+<h1>Upload csv file</h1>
+
+<form method="post" enctype="multipart/form-data">   
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload File</button><br>
+</form><br><br>
+{% endif %}
+
+
+
+<div class="tab">
+    <h2>Students Details</h2><br>
+<table >
+    <thead>
+        <th>S.No</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Department</th>
+        {% if user.is_staff %}
+        <th>Delete Button</th>
+        {% endif %}
+
+    </thead>
+    <tbody>
+        {% for i in data %}
+        <tr>
+        <td>{{forloop.counter}}</td>
+        <td>{{i.name}}</td>
+        <td>{{i.email}}</td>
+        <td>{{i.department}}</td>
+        {% if user.is_staff %}
+
+        <td style="text-align: center;" class="dell">
+            <form method="post" action="{% url 'delete_person' i.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="delete-button" title="Delete">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </button>
+            </form>
+        </td>
+        {% endif %}
+
+        </tr>
+        {% endfor %}
+        
+    </tbody>
+</table>
+</div>
+
+<div class="messages">
+    {% if messages %}
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    {% endif %}
+</div>
+</body>
+</html>
+
